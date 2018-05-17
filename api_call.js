@@ -1,6 +1,27 @@
 var header = {'Content-Type':'application/json', 
 'Ocp-Apim-Subscription-Key':'f149237a-56ea-41f9-ba5c-28b39fc5af43'}
+var restify=require('restify');
+var builder=rquire('botbuilder');
 
+// Setup Restify Server 
+var server = restify.createServer(); 
+server.listen(process.env.port || process.env.PORT || 3978, 
+    function () {    
+        console.log('%s listening to %s', server.name, server.url);  
+    });  
+// chat connector for communicating with the Bot Framework Service 
+var connector = new builder.ChatConnector({     
+    appId: 'a2be8510-dbda-4ee9-ba03-3cb16a962abc',     
+    appPassword: 'vxaOL0467)%bkopJRWLA8@*'
+});
+// Listen for messages from users  
+server.post('/api/messages', connector.listen());  
+// Receive messages from the user and respond by echoing each message back (prefixed with 'You said:') 
+var bot = new builder.UniversalBot(connector, function (session) {     
+    session.send("You said: %s", session.message.text); 
+    });
+
+// the api part
 function sendGetSentimentRequest(message) {      
     var options = {        
        method: 'POST',        
